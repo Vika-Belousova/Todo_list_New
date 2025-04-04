@@ -10,7 +10,7 @@ export default class ClearButtonComponent {
   }
 
   getTemplate() {
-    return `<button class="clear-button">Очистить корзину</button>`;
+   return  createClearButtonTemplate();
   }
 
   getElement() {

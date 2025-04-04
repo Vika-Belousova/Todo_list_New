@@ -10,14 +10,4 @@ export default class TaskModel {
   getTasks() {
     return this.tasks;
   }
-  addTask(task) {
-    if (!task || !task.title) {
-      return;
-    }
-    this.tasks.push(task);
-  }
-
-  removeTask(taskId) {
-    this.tasks = this.tasks.filter((task) => task.id !== taskId);
-  }
 }
