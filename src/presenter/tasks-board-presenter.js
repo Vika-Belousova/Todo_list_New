@@ -1,42 +1,87 @@
 import HeaderComponent from '../view/header-component.js';
 import FormAddTaskComponent from '../view/form-add-task-component.js';
 import TaskListComponent from '../view/tasklist-component.js';
-import TaskComponent from '../view/task-component.js';
 import ClearButtonComponent from '../view/clear-button-component.js';
+import EmptyComponent from '../view/empty-component.js';
+import TaskComponent from '../view/task-component.js';
+
 import { render, RenderPosition } from '../framework/render.js';
 import { Status, StatusLabel } from '../const.js';
 
 export default class TaskBoardPresenter {
+  #bodyContainer = null;
+  #boardContainer = null;
+  #taskModel = null;
+  #boardTasks = [];
+
   constructor({ bodyContainer, boardContainer, taskModel }) {
-    this.bodyContainer = bodyContainer; 
-    this.boardContainer = boardContainer;
-    this.taskModel = taskModel;
+    this.#bodyContainer = bodyContainer;
+    this.#boardContainer = boardContainer;
+    this.#taskModel = taskModel;
   }
 
   init() {
-    render(new HeaderComponent(), this.bodyContainer, RenderPosition.BEFOREBEGIN);
+    render(new HeaderComponent(), this.#bodyContainer, RenderPosition.BEFOREBEGIN);
+    render(new FormAddTaskComponent(this.#handleAddTask.bind(this)), this.#bodyContainer, RenderPosition.AFTERBEGIN);
 
-    render(new FormAddTaskComponent(), this.bodyContainer, RenderPosition.AFTERBEGIN);
+    this.#boardTasks = this.#taskModel.tasks;
+    this.#renderBoard();
+  }
 
-    const tasks = this.taskModel.getTasks();
+  #handleAddTask(title) {
+    const newTask = {
+      id: Date.now(),
+      title,
+      status: 'backlog',
+    };
 
+    this.#boardTasks.push(newTask);
+    this.#rerenderBoard();
+  }
+
+  #rerenderBoard() {
+    this.#boardContainer.innerHTML = '';
+    this.#renderBoard();
+  }
+
+  #renderBoard() {
     Object.keys(Status).forEach((statusKey) => {
       const status = Status[statusKey];
-      const filteredTasks = tasks.filter(task => task.status === status);
+      const tasksByStatus = this.#boardTasks.filter((task) => task.status === status);
 
-      const taskList = new TaskListComponent(StatusLabel[status]);
-      taskList.getElement().classList.add(status);
-      render(taskList, this.boardContainer);
-
-      filteredTasks
-        .filter(task => task && task.title && task.title !== 'undefined')
-        .forEach((task) => {
-          const taskComponent = new TaskComponent(task.title);
-          render(taskComponent, taskList.getElement().querySelector('.desc-list'));
-        });
-      if (status === Status.BASKET) {
-        render(new ClearButtonComponent(), taskList.getElement(), RenderPosition.BEFOREEND);
-      }
+      this.#renderTasksList(tasksByStatus, status);
     });
   }
+
+
+  #renderTask(task, container) {
+    const taskComponent = new TaskComponent(task);
+    render(taskComponent, container.querySelector('.desc-list'));
+  }
+
+
+  #renderEmptyStub(container) {
+    const emptyComponent = new EmptyComponent();
+    render(emptyComponent, container.querySelector('.desc-list'));
+  }
+
+
+  #renderTasksList(tasks, status) {
+    const taskList = new TaskListComponent(StatusLabel[status]);
+    taskList.element.classList.add(status);
+    render(taskList, this.#boardContainer);
+
+    if (tasks.length === 0) {
+      this.#renderEmptyStub(taskList.element);
+    } else {
+      tasks.forEach((task) => this.#renderTask(task, taskList.element));
+    }
+
+    if (status === Status.BASKET) {
+      render(new ClearButtonComponent(), taskList.element, RenderPosition.BEFOREEND);
+    }
+  }
 }
+
+
+

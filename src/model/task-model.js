@@ -1,13 +1,14 @@
-// src/model/task-model.js
-
+// task-model.js
 import { tasks } from '../mock/task.js';
 
 export default class TaskModel {
+  #tasks;
+
   constructor() {
-    this.tasks = [...tasks];
+    this.#tasks = [...tasks];
   }
 
-  getTasks() {
-    return this.tasks;
+  get tasks() {
+    return this.#tasks;
   }
 }

@@ -1,33 +1,20 @@
-// task-component.js
-import { createElement } from '../framework/render.js';
+// src/view/task-component.js
+import { AbstractComponent } from '../framework/view/abstract-component.js';
 
-function createTaskComponentTemplate(title) {
-  if (!title || title === 'undefined') {
-    return ''; 
-  }
-  return `<li class="desc">${title}</li>`;
+function createTaskComponentTemplate(task) {
+  if (!task?.title) return '';
+  return `<li class="desc">${task.title}</li>`;
 }
 
-export default class TaskComponent {
-  constructor(description) {  
-    this.description = description && description !== 'undefined' ? description : ''; 
+export default class TaskComponent extends AbstractComponent {
+  #task;
+
+  constructor(task) {
+    super();
+    this.#task = task;
   }
 
-  getTemplate() {
-    return createTaskComponentTemplate(this.description);
-  }
-
-  getElement() {
-    if (!this.description) {
-      return null; 
-    }
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTaskComponentTemplate(this.#task);
   }
 }

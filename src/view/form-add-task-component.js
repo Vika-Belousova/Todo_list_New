@@ -1,4 +1,5 @@
-import { createElement } from '../framework/render.js';
+// src/view/form-add-task-component.js
+import { AbstractComponent } from '../framework/view/abstract-component.js';
 
 function createFormAddTaskComponentTemplate() {
   return `
@@ -10,33 +11,32 @@ function createFormAddTaskComponentTemplate() {
   `;
 }
 
-export default class FormAddTaskComponent {
+export default class FormAddTaskComponent extends AbstractComponent {
+  #onAddTask;
+
   constructor(onAddTask) {
-    this.onAddTask = onAddTask;
+    super();
+    this.#onAddTask = onAddTask;
   }
 
-  getTemplate() {
+  get template() {
     return createFormAddTaskComponentTemplate();
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-      this.inputElement = this.element.querySelector('input');
-      this.buttonElement = this.element.querySelector('button');
+  get element() {
+    const element = super.element;
 
-      this.buttonElement.addEventListener('click', () => {
-        const taskName = this.inputElement.value.trim();
-        if (taskName) {
-          this.onAddTask(taskName);
-          this.inputElement.value = '';
-        }
-      });
-    }
-    return this.element;
-  }
+    const inputElement = element.querySelector('input');
+    const buttonElement = element.querySelector('button');
 
-  removeElement() {
-    this.element = null;
+    buttonElement.addEventListener('click', () => {
+      const taskName = inputElement.value.trim();
+      if (taskName) {
+        this.#onAddTask(taskName);
+        inputElement.value = '';
+      }
+    });
+
+    return element;
   }
 }

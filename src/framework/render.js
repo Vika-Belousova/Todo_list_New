@@ -1,3 +1,5 @@
+import { AbstractComponent } from './view/abstract-component.js';
+
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -8,26 +10,17 @@ const RenderPosition = {
 function createElement(template) {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
-  if (!newElement.firstElementChild) {
-    console.error('Error: Invalid template or empty element created.');
-  }
-
   return newElement.firstElementChild;
 }
 
 function render(component, container, place = RenderPosition.BEFOREEND) {
-  if (!container || !component || typeof component.getElement !== 'function') {
-    console.error('Ошибка рендера:', { component, container });
-    return;
+  if (!(component instanceof AbstractComponent)) {
+    throw new Error('Can render only components');
   }
-
-  const element = component.getElement();
-  if (!element) {
-    console.error('Ошибка: getElement() вернул null или undefined', component);
-    return;
+  if (container === null) {
+    throw new Error('Container element does not exist');
   }
-
-  container.insertAdjacentElement(place, element);
+  container.insertAdjacentElement(place, component.element);
 }
 
 export { RenderPosition, createElement, render };
