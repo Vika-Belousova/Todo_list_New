@@ -1,5 +1,3 @@
-import HeaderComponent from '../view/header-component.js';
-import FormAddTaskComponent from '../view/form-add-task-component.js';
 import TaskListComponent from '../view/tasklist-component.js';
 import ClearButtonComponent from '../view/clear-button-component.js';
 import EmptyComponent from '../view/empty-component.js';
@@ -21,21 +19,7 @@ export default class TaskBoardPresenter {
   }
 
   init() {
-    render(new HeaderComponent(), this.#bodyContainer, RenderPosition.BEFOREBEGIN);
-    render(new FormAddTaskComponent(this.#handleAddTask.bind(this)), this.#bodyContainer, RenderPosition.AFTERBEGIN);
-
     this.#boardTasks = this.#taskModel.tasks;
-    this.#renderBoard();
-  }
-
-  #handleAddTask(title) {
-    const newTask = {
-      id: Date.now(),
-      title,
-      status: 'backlog',
-    };
-
-    this.#boardTasks.push(newTask);
     this.#rerenderBoard();
   }
 
@@ -53,18 +37,15 @@ export default class TaskBoardPresenter {
     });
   }
 
-
   #renderTask(task, container) {
     const taskComponent = new TaskComponent(task);
     render(taskComponent, container.querySelector('.desc-list'));
   }
 
-
   #renderEmptyStub(container) {
     const emptyComponent = new EmptyComponent();
     render(emptyComponent, container.querySelector('.desc-list'));
   }
-
 
   #renderTasksList(tasks, status) {
     const taskList = new TaskListComponent(StatusLabel[status]);
@@ -82,6 +63,3 @@ export default class TaskBoardPresenter {
     }
   }
 }
-
-
-
