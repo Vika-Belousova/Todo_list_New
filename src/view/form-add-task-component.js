@@ -5,34 +5,29 @@ function createFormAddTaskComponentTemplate() {
   return `
     <form class="container_input">
       <div class="container_title">Новая задача</div>
-      <input id="add-task" type="text" placeholder="Название задачи" required>
+      <input type="text" placeholder="Название задачи" required>
       <button type="submit" class="add">+ Добавить</button>
     </form>
   `;
 }
 
 export default class FormAddTaskComponent extends AbstractComponent {
-  #onAddTask = null;
-
-  constructor(onAddTask) {
+  constructor() {
     super();
-    this.#onAddTask = onAddTask;
-    this.#setSubmitHandler();
   }
 
   get template() {
-    return createFormAddTaskComponentTemplate();  
+    return createFormAddTaskComponentTemplate();
   }
 
-  #setSubmitHandler() {
+  setAddTaskHandler(handler) {
     this.element.addEventListener('submit', (evt) => {
       evt.preventDefault();
-      const inputElement = this.element.querySelector('input');
-      const taskName = inputElement.value.trim();
-      
-      if (taskName) {
-        this.#onAddTask(taskName);
-        inputElement.value = '';
+      const input = this.element.querySelector('input');
+      const title = input.value.trim();
+      if (title) {
+        handler(title);
+        input.value = '';
       }
     });
   }
