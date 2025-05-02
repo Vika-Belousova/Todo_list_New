@@ -21,9 +21,6 @@ export default class TaskBoardPresenter {
   }
 
   init() {
-    render(new HeaderComponent(), this.#bodyContainer, RenderPosition.BEFOREBEGIN);
-    render(new FormAddTaskComponent(this.#handleAddTask.bind(this)), this.#bodyContainer, RenderPosition.AFTERBEGIN);
-
     this.#boardTasks = this.#taskModel.tasks;
     this.#renderBoard();
   }
@@ -31,10 +28,6 @@ export default class TaskBoardPresenter {
   #handleModelChange() {
     this.#boardTasks = this.#taskModel.tasks;
     this.#rerenderBoard();
-  }
-
-  #handleAddTask(title) {
-    this.#taskModel.addTask(title);
   }
 
   #handleClearBasket = () => {
