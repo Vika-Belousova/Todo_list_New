@@ -103,6 +103,15 @@ header{
           padding-left: 10px;
         }
       } 
+            .clear-button--disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      
+      .clear-button--disabled:hover {
+        background-color: #cccccc;
+      }
+    }
     }
   }
 }
