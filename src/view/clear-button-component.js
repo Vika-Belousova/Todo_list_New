@@ -1,26 +1,34 @@
+// src/view/clear-button-component.js
 import { AbstractComponent } from '../framework/view/abstract-component.js';
 
-function createClearButtonTemplate() {
-  return `<button class="clear-button">Очистить корзину</button>`;
-}
-
 export default class ClearButtonComponent extends AbstractComponent {
-  #onClearCart = null;
+  #isDisabled = false;
 
-  constructor(onClear) {
+  constructor({ onClick, isDisabled = false }) {
     super();
-    this.#onClearCart = onClear;
-    this.#setClickHandler();
+    this.#isDisabled = isDisabled;
+    this.#setClickHandler(onClick);
   }
 
   get template() {
-    return createClearButtonTemplate();
+    return `
+      <button class="clear-button ${this.#isDisabled ? 'clear-button--disabled' : ''}">
+        Очистить корзину
+      </button>
+    `;
   }
 
-  #setClickHandler() {
+  updateDisabledState(isDisabled) {
+    this.#isDisabled = isDisabled;
+    this.element.classList.toggle('clear-button--disabled', isDisabled);
+  }
+
+  #setClickHandler(handler) {
     this.element.addEventListener('click', (evt) => {
       evt.preventDefault();
-      this.#onClearCart();
+      if (!this.#isDisabled && handler) {
+        handler();
+      }
     });
   }
 }
