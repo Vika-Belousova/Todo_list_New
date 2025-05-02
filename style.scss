@@ -105,6 +105,15 @@ header{
       } 
     }
   }
+  .clear-button:hover:not(.clear-button--disabled) {
+  background-color: #b73c3c !important;
+}
+
+.clear-button--disabled {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed;
+}
 }
 
 .block_wrap.backlog .wrap_title {
