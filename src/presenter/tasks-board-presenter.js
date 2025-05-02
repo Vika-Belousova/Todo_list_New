@@ -1,46 +1,31 @@
 // src/presenter/tasks-board-presenter.js
-import HeaderComponent from '../view/header-component.js';
-import FormAddTaskComponent from '../view/form-add-task-component.js';
 import TaskListComponent from '../view/tasklist-component.js';
 import ClearButtonComponent from '../view/clear-button-component.js';
 import EmptyComponent from '../view/empty-component.js';
 import TaskComponent from '../view/task-component.js';
 
-import { render, RenderPosition } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import { Status, StatusLabel } from '../const.js';
 
 export default class TaskBoardPresenter {
-  #bodyContainer = null;
   #boardContainer = null;
   #taskModel = null;
   #boardTasks = [];
 
-  constructor({ bodyContainer, boardContainer, taskModel }) {
-    this.#bodyContainer = bodyContainer;
+  constructor({ boardContainer, taskModel }) {
     this.#boardContainer = boardContainer;
     this.#taskModel = taskModel;
     this.#taskModel.addObserver(this.#handleModelChange.bind(this));
   }
 
   init() {
-    render(new HeaderComponent(), this.#bodyContainer, RenderPosition.BEFOREBEGIN);
-    render(new FormAddTaskComponent(this.#handleAddTask.bind(this)), this.#bodyContainer, RenderPosition.AFTERBEGIN);
-
     this.#boardTasks = this.#taskModel.tasks;
     this.#renderBoard();
-  }
-
-  get tasks() {
-    return this.#taskModel.tasks;
   }
 
   #handleModelChange() {
     this.#boardTasks = this.#taskModel.tasks;
     this.#rerenderBoard();
-  }
-
-  #handleAddTask(title) {
-    this.#taskModel.addTask(title);
   }
 
   #handleClearBasket = () => {
@@ -56,7 +41,6 @@ export default class TaskBoardPresenter {
     Object.keys(Status).forEach((statusKey) => {
       const status = Status[statusKey];
       const tasksByStatus = this.#boardTasks.filter((task) => task.status === status);
-
       this.#renderTasksList(tasksByStatus, status);
     });
   }
@@ -86,8 +70,7 @@ export default class TaskBoardPresenter {
       const isBasketEmpty = tasks.length === 0;
       render(
         new ClearButtonComponent(this.#handleClearBasket, isBasketEmpty), 
-        taskList.element, 
-        RenderPosition.BEFOREEND
+        taskList.element.querySelector('.desc-list')
       );
     }
   }
