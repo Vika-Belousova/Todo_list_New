@@ -40,7 +40,7 @@ export default class TaskBoardPresenter {
 
   #updateView() {
     this.#updateClearButtonState();
-    this.#rerenderBoard();
+    this.#renderFullBoard();
   }
 
   #updateClearButtonState() {
@@ -53,11 +53,6 @@ export default class TaskBoardPresenter {
   }
 
   #renderFullBoard() {
-    this.#clearBoard();
-    this.#renderBoard();
-  }
-
-  #rerenderBoard() {
     this.#clearBoard();
     this.#renderBoard();
   }
